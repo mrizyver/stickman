@@ -37,7 +37,7 @@ public class MainActivity extends Activity {
             }
             return false;
         });
-        gameView.startRun();
+        gameView.startGame();
     }
 
 }

@@ -8,6 +8,9 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.izyver.mr.stikman.stickman.Stickman;
+import com.izyver.mr.stikman.stickman.StickmanEngine;
+
 public class GameView extends SurfaceView implements Movable, Runnable{
 
     private static final String TAG = "GameView";
@@ -17,45 +20,49 @@ public class GameView extends SurfaceView implements Movable, Runnable{
             moveToRight = false,
             isGameRunning = true;
     private Paint paint;
-    private float point[] = {10f,10f};
-
     private Thread gameThread;
     private SurfaceHolder surfaceHolder;
     private Canvas canvas;
 
+    private StickmanEngine stickmanEngine;
 
     public GameView(Context context) {
         super(context);
         surfaceHolder = getHolder();
         paint = new Paint();
         paint.setColor(Color.BLACK);
+        paint.setStrokeWidth(2);
         gameThread = new Thread(this::run);
+        stickmanEngine = new StickmanEngine(0, 0, 200);
+
+
     }
 
     private void draw(){
         if(surfaceHolder.getSurface().isValid() == false) return;
 
         if(moveToLeft){
-            moveAside(-3);
+            drawStickman(stickmanEngine.moveToLeft());
             return;
         }else if(moveToRight){
-            moveAside(3);
             return;
         }
     }
 
-    void moveAside(int distance){
+    private void drawStickman(Stickman stickman) {
         canvas = surfaceHolder.lockCanvas();
-        if (point[X] >= 0 && point[X] <= getMeasuredWidth())
-            point[X] += distance;
         canvas.drawColor(Color.WHITE);
-        canvas.drawCircle(point[X], point[Y], 10, paint);
+        canvas.drawLines(stickman.getAllLines(), paint);
         surfaceHolder.unlockCanvasAndPost(canvas);
     }
 
-
-    public void startRun() {
+    public void startGame() {
         gameThread.start();
+    }
+
+    public void stopGame(){
+        isGameRunning = false;
+        gameThread.interrupt();
     }
 
     @Override

@@ -47,14 +47,9 @@ public class StickmanEngine {
         this.stepWidth = stickman.ankleRight[X] - stickman.ankleLeft[X];
     }
 
-    public Stickman moveToLeft() {
-        long nowTime = System.currentTimeMillis();
-        double currentTimeFrame = nowTime - lastAppeal;
-        if (currentTimeFrame > MAX_FRAME_TIME){
-            lastAppeal = nowTime;
-            return stickman;
-        }
-        double distance = speed * (currentTimeFrame / 1000.0);
+    public Stickman goToLeft() {
+        double distance = calculateMoveDistance();
+        if (distance == 0) return stickman;
         stickman.pelvis[X] -= distance;
         stickman.chest[X] -= distance;
         stickman.wristLeft[X] -= distance;
@@ -63,14 +58,14 @@ public class StickmanEngine {
 
         switch (leadingLed){
             case RIGHT:
-                stickman.ankleLeft[X] += distance + (distance * 0.25);
-                if ((stickman.ankleLeft[X] - stickman.pelvis[X]) >= (stepWidth / 2)){
+                stickman.ankleLeft[X] -= distance * 2;
+                if ((stickman.ankleRight[X] - stickman.pelvis[X]) >= (stepWidth / 2)){
                     leadingLed = LEFT;
                 }
                 break;
             case LEFT:
-                stickman.ankleRight[X] += distance + (distance * 0.25);
-                if ((stickman.ankleRight[X] - stickman.pelvis[X]) >= (stepWidth / 2)){
+                stickman.ankleRight[X] -= distance * 2;
+                if ((stickman.ankleLeft[X] - stickman.pelvis[X]) >= (stepWidth / 2)){
                     leadingLed = RIGHT;
                 }
                 break;
@@ -91,21 +86,41 @@ public class StickmanEngine {
         switch (leadingLed){
             case RIGHT:
                 stickman.ankleLeft[X] += distance * 2;
+                straightenRightFoot(stickman);
+                if (stickman.kneeLeft[X] < stickman.pelvis[X]){
+                    stickman.kneeLeft[X] += distance * 1.9;
+                }else {
+                    stickman.kneeLeft[X] += distance;
+                    float[] knee = getAveragePointInLine(stickman.ankleLeft, stickman.pelvis);
+                    if (knee[X] > stickman.kneeLeft[X]){
+                        stickman.kneeLeft = knee;
+                    }
+                }
                 if ((stickman.ankleLeft[X] - stickman.pelvis[X]) >= (stepWidth / 2)){
                     leadingLed = LEFT;
                 }
                 break;
             case LEFT:
                 stickman.ankleRight[X] += distance * 2;
+                straightenLeftFoot(stickman);
+                if (stickman.kneeRight[X] < stickman.pelvis[X]){
+                    stickman.kneeRight[X] += distance * 1.9;
+                }else {
+                    stickman.kneeRight[X] += distance;
+                    float[] knee = getAveragePointInLine(stickman.ankleRight, stickman.pelvis);
+                    if (knee[X] > stickman.kneeRight[X]){
+                        stickman.kneeRight = knee;
+                    }
+                }
                 if ((stickman.ankleRight[X] - stickman.pelvis[X]) >= (stepWidth / 2)){
                     leadingLed = RIGHT;
                 }
                 break;
         }
-        straightenFoots(stickman);
         return stickman;
     }
 
+    //TODO javadoc
     private double calculateMoveDistance(){
         long nowTime = System.currentTimeMillis();
         double currentTimeFrame = nowTime - lastAppeal;
@@ -130,6 +145,21 @@ public class StickmanEngine {
 
         stickman.kneeRight[X] = (stickman.pelvis[X] + stickman.ankleRight[X]) / 2;
         stickman.kneeRight[Y] = (stickman.pelvis[Y] + stickman.ankleRight[Y]) /2 ;
+    }
+    private void straightenLeftFoot(Stickman stickman) {
+        stickman.kneeLeft[Y] = (stickman.pelvis[Y] + stickman.ankleLeft[Y]) / 2;
+        stickman.kneeLeft[X] = (stickman.pelvis[X] + stickman.ankleLeft[X]) / 2;
+    }
+    private void straightenRightFoot(Stickman stickman) {
+        stickman.kneeRight[X] = (stickman.pelvis[X] + stickman.ankleRight[X]) / 2;
+        stickman.kneeRight[Y] = (stickman.pelvis[Y] + stickman.ankleRight[Y]) /2 ;
+    }
+
+    private float[] getAveragePointInLine(float[] point1, float[] point2){
+        float[] averagePoint = new float[2];
+        averagePoint[X] = (point1[X] + point2[X]) / 2;
+        averagePoint[Y] = (point1[Y] + point2[Y]) / 2;
+        return averagePoint;
     }
 
     private void createStickman(Stickman stickman, int stickmanHeight) {

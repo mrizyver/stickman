@@ -41,14 +41,14 @@ public class GameView extends SurfaceView implements Movable, Runnable{
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
         stickmanEngine = new StickmanEngine(width, height, 200);
-        drawStickman(stickmanEngine.moveToLeft());
+        drawStickman(stickmanEngine.goToLeft());
     }
 
     private void draw(){
         if(!surfaceHolder.getSurface().isValid()) return;
 
         if(moveToLeft){
-            drawStickman(stickmanEngine.moveToLeft());
+            drawStickman(stickmanEngine.goToLeft());
             return;
         }else if(moveToRight){
             drawStickman(stickmanEngine.goToRight());

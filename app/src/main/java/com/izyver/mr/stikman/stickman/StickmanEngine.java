@@ -42,8 +42,9 @@ public class StickmanEngine {
         this.height = height;
         this.stickmanHeight = stickmanHeight;
         this.speed = stickmanHeight / stickmanHeightPerSecond;
-        stickman = new Stickman();
+        this.stickman = new Stickman();
         createStickman(stickman, stickmanHeight);
+        this.stepWidth = stickman.ankleRight[X] - stickman.ankleLeft[X];
     }
 
     public Stickman moveToLeft() {
@@ -174,8 +175,6 @@ public class StickmanEngine {
 
         elbowRight[X] = (chest[X] + wristRight[X]) / 2;
         elbowRight[Y] = (chest[Y] + wristRight[Y]) / 2;
-
-        stepWidth = ankleRight[X] - ankleLeft[X];
 
         stickman.setAnkleLeft(ankleLeft)
                 .setAnkleRight(ankleRight)

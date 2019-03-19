@@ -39,5 +39,4 @@ public class MainActivity extends Activity {
         });
         gameView.startGame();
     }
-
 }

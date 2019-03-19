@@ -2,7 +2,7 @@ package com.izyver.mr.stikman.stickman;
 
 public class Stickman {
     private final static int X = 0, Y = 1;
-    private float[]
+    public float[]
             chest = new float[2],
             elbowLeft = new float[2],
             elbowRight = new float[2],
@@ -80,6 +80,10 @@ public class Stickman {
         return this;
     }
 
+    /**
+     * Adding all points to a single array, for drawing lines in Canvas.drawLines(...)
+     * @return
+     */
     public float[] getAllLines() {
         float[] allLines = new float[36];
         //adding left hand to array
@@ -112,4 +116,5 @@ public class Stickman {
 
         return allLines;
     }
+
 }

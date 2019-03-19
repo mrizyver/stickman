@@ -32,19 +32,26 @@ public class GameView extends SurfaceView implements Movable, Runnable{
         paint = new Paint();
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(2);
-        gameThread = new Thread(this::run);
-        stickmanEngine = new StickmanEngine(0, 0, 200);
+    }
 
-
+    /**
+     * The method need start after attach view on the screen
+     */
+    private void initializeGame() {
+        int width = getMeasuredWidth();
+        int height = getMeasuredHeight();
+        stickmanEngine = new StickmanEngine(width, height, 200);
+        drawStickman(stickmanEngine.moveToLeft());
     }
 
     private void draw(){
-        if(surfaceHolder.getSurface().isValid() == false) return;
+        if(!surfaceHolder.getSurface().isValid()) return;
 
         if(moveToLeft){
             drawStickman(stickmanEngine.moveToLeft());
             return;
         }else if(moveToRight){
+            drawStickman(stickmanEngine.goToRight());
             return;
         }
     }
@@ -56,13 +63,22 @@ public class GameView extends SurfaceView implements Movable, Runnable{
         surfaceHolder.unlockCanvasAndPost(canvas);
     }
 
+
+    /**
+     * Game thread starting when view created
+     */
     public void startGame() {
-        gameThread.start();
+        gameThread = new Thread(this::run);
+        post(() ->  {
+            initializeGame();
+            gameThread.start();
+        });
     }
 
     public void stopGame(){
         isGameRunning = false;
         gameThread.interrupt();
+        gameThread = null;
     }
 
     @Override
@@ -75,7 +91,7 @@ public class GameView extends SurfaceView implements Movable, Runnable{
     private void updateGameScreen() {
         draw();
         try {
-            gameThread.sleep(20);
+            gameThread.sleep(10);
         } catch (InterruptedException e) {
             Log.e(TAG, "updateGameScreen: game is stop", e);
             isGameRunning = false;
@@ -91,5 +107,4 @@ public class GameView extends SurfaceView implements Movable, Runnable{
     public void toLeft(boolean isMove) {
         moveToLeft = isMove;
     }
-
 }

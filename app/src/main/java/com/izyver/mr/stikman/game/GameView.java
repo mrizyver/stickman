@@ -1,4 +1,4 @@
-package com.izyver.mr.stikman;
+package com.izyver.mr.stikman.game;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.izyver.mr.stikman.stick.core.Movable;
 import com.izyver.mr.stikman.stickman.Stickman;
 import com.izyver.mr.stikman.stickman.StickmanEngine;
 

@@ -1,6 +1,6 @@
-package com.izyver.mr.stikman;
+package com.izyver.mr.stikman.stick.core;
 
-interface Movable {
+public interface Movable {
     void toRight(boolean isMove);
     void toLeft(boolean isMove);
     default void ToUp(boolean isMove){}

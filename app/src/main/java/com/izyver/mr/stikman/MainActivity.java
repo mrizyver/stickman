@@ -6,6 +6,9 @@ import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.izyver.mr.stikman.R;
+import com.izyver.mr.stikman.game.GameView;
+
 public class MainActivity extends Activity {
 
     @Override

@@ -2,6 +2,7 @@ package com.izyver.mr.stikman.stickman;
 
 public class Stickman {
     private final static int X = 0, Y = 1;
+
     public float[]
             chest = new float[2],
             elbowLeft = new float[2],
@@ -13,22 +14,6 @@ public class Stickman {
             kneeRight = new float[2],
             ankleLeft = new float[2],
             ankleRight = new float[2];
-
-    public Hand getHandLeft(){
-        return new Hand(chest, elbowLeft, wristLeft);
-    }
-
-    public Hand getHandRight(){
-        return new Hand(chest, elbowRight, wristLeft);
-    }
-
-    public Foot getFootLeft(){
-        return new Foot(pelvis, kneeLeft, ankleLeft);
-    }
-
-    public Foot getFootRight(){
-        return new Foot(pelvis, kneeRight, ankleRight);
-    }
 
     public Stickman setChest(float[] chest) {
         this.chest = chest;
@@ -116,5 +101,4 @@ public class Stickman {
 
         return allLines;
     }
-
 }

@@ -32,10 +32,7 @@ public class StickmanEngine {
 
     private LeadingLed leadingLed = RIGHT;
 
-
-
     private Stickman stickman;
-
 
     public StickmanEngine(int width, int height, int stickmanHeight) {
         this.width = width;

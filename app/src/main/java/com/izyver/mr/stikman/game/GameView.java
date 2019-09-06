@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.izyver.mr.stikman.game.screens.GameScreen;
+import com.izyver.mr.stikman.screens.GameScreen;
 
 public class GameView extends SurfaceView{
 

@@ -1,4 +1,4 @@
-package com.izyver.mr.stikman.game.screens;
+package com.izyver.mr.stikman.screens;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -12,6 +12,8 @@ import com.izyver.mr.stikman.stick.World;
 
 public class StickmanScreen implements GameScreen {
 
+    public static final String USER_STICK_NAME = "com.izyver.mr.stikman.game.stickman.Stickman.User";
+
     private Paint paint;
 
     private int width;
@@ -21,7 +23,7 @@ public class StickmanScreen implements GameScreen {
     private final StickmanController stickController;
 
     public StickmanScreen() {
-        Stickman stickman = new Stickman();
+        Stickman stickman = new Stickman(USER_STICK_NAME);
         this.gameWorld = new GameWorld();
         this.stickController = new StickmanController(stickman, this.gameWorld);
 
@@ -32,7 +34,7 @@ public class StickmanScreen implements GameScreen {
 
     @Override
     public void updateScreen(long deltaTime) {
-
+        gameWorld.update(deltaTime);
     }
 
     @Override

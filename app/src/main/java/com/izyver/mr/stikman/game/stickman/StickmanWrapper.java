@@ -7,4 +7,6 @@ public class StickmanWrapper {
     public StickmanWrapper(Stickman stickman) {
         this.stickman = stickman;
     }
+
+
 }

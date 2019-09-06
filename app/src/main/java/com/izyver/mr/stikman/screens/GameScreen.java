@@ -1,4 +1,4 @@
-package com.izyver.mr.stikman.game.screens;
+package com.izyver.mr.stikman.screens;
 
 import android.graphics.Canvas;
 

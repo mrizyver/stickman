@@ -2,78 +2,54 @@ package com.izyver.mr.stikman.game;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.izyver.mr.stikman.stick.core.Movable;
-import com.izyver.mr.stikman.stickman.Stickman;
-import com.izyver.mr.stikman.stickman.StickmanEngine;
+import com.izyver.mr.stikman.game.screens.GameScreen;
 
-public class GameView extends SurfaceView implements Movable, Runnable{
+public class GameView extends SurfaceView{
 
     private static final String TAG = "GameView";
     private final static int X = 0, Y = 1;
-    private boolean
-            moveToLeft = false,
-            moveToRight = false,
-            isGameRunning = true;
-    private Paint paint;
+    private boolean isGameRunning = true;
+
     private Thread gameThread;
     private SurfaceHolder surfaceHolder;
     private Canvas canvas;
 
-    private StickmanEngine stickmanEngine;
+    private GameScreen gameScreen;
+    private OnScreenInput inputScreen;
 
     public GameView(Context context) {
         super(context);
         surfaceHolder = getHolder();
-        paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(2);
     }
 
-    /**
-     * The method need start after attach view on the screen
-     */
-    private void initializeGame() {
-        int width = getMeasuredWidth();
-        int height = getMeasuredHeight();
-        stickmanEngine = new StickmanEngine(width, height, 200);
-        drawStickman(stickmanEngine.goToLeft());
+    public void setGameScreen(GameScreen gameScreen) {
+        this.gameScreen = gameScreen;
+        this.inputScreen = gameScreen.getInputScreen();
     }
 
-    private void draw(){
-        if(!surfaceHolder.getSurface().isValid()) return;
-
-        if(moveToLeft){
-            drawStickman(stickmanEngine.goToLeft());
-            return;
-        }else if(moveToRight){
-            drawStickman(stickmanEngine.goToRight());
-            return;
-        }
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        gameScreen.resize(getWidth(), getHeight());
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
-
-    private void drawStickman(Stickman stickman) {
-        canvas = surfaceHolder.lockCanvas();
-        canvas.drawColor(Color.WHITE);
-        canvas.drawLines(stickman.getAllLines(), paint);
-        surfaceHolder.unlockCanvasAndPost(canvas);
-    }
-
 
     /**
      * Game thread starting when view created
      */
     public void startGame() {
-        gameThread = new Thread(this::run);
-        post(() ->  {
-            initializeGame();
+        if (gameScreen == null) throw new NullPointerException("gameScreen must be not null!");
+        gameThread = new Thread(this::render);
+
+        if (isAttachedToWindow()){
             gameThread.start();
-        });
+        }else {
+            post(() -> gameThread.start());
+        }
     }
 
     public void stopGame(){
@@ -82,30 +58,41 @@ public class GameView extends SurfaceView implements Movable, Runnable{
         gameThread = null;
     }
 
-    @Override
-    public void run() {
+    private void render() {
         while (isGameRunning){
-            updateGameScreen();
-        }
-    }
 
-    private void updateGameScreen() {
-        draw();
-        try {
-            gameThread.sleep(10);
-        } catch (InterruptedException e) {
-            Log.e(TAG, "updateGameScreen: game is stop", e);
-            isGameRunning = false;
+            if(!surfaceHolder.getSurface().isValid()) continue;
+
+            canvas = surfaceHolder.lockCanvas();
+            gameScreen.render(canvas);
+            surfaceHolder.unlockCanvasAndPost(canvas);
+
+            gameScreen.updateScreen(16);
+
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                Log.e(TAG, "render: game is stop", e);
+                isGameRunning = false;
+                break;
+            }
         }
     }
 
     @Override
-    public void toRight(boolean isMove) {
-        moveToRight = isMove;
-    }
-
-    @Override
-    public void toLeft(boolean isMove) {
-        moveToLeft = isMove;
+    public boolean onTouchEvent(MotionEvent event) {
+        int x = (int) event.getX(), y = (int) event.getY();
+        switch (event.getAction()){
+            case MotionEvent.ACTION_DOWN :
+                inputScreen.onDown(x, y);
+                break;
+            case MotionEvent.ACTION_UP :
+                inputScreen.onUp(x, y);
+                break;
+            case MotionEvent.ACTION_MOVE :
+                inputScreen.onMove(x, y);
+                break;
+        }
+        return true;
     }
 }

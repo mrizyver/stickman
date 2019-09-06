@@ -1,7 +1,7 @@
 package com.izyver.mr.stikman.game.stickman;
 
 import com.izyver.mr.stikman.stick.core.InteractionStick;
-import com.izyver.mr.stikman.stick.core.World;
+import com.izyver.mr.stikman.stick.World;
 
 public class GameWorld extends World {
 

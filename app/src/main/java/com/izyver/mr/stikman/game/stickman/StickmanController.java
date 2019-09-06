@@ -1,7 +1,7 @@
 package com.izyver.mr.stikman.game.stickman;
 
-import com.izyver.mr.stikman.stick.core.InteractionController;
-import com.izyver.mr.stikman.stick.core.World;
+import com.izyver.mr.stikman.stick.InteractionController;
+import com.izyver.mr.stikman.stick.World;
 
 public class StickmanController extends InteractionController<Stickman> {
 

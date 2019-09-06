@@ -1,4 +1,4 @@
-package com.izyver.mr.stikman.stick.core;
+package com.izyver.mr.stikman.stick;
 
 public interface Movable {
     void toRight(boolean isMove);

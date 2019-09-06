@@ -3,6 +3,7 @@ package com.izyver.mr.stikman.game;
 import com.izyver.mr.stikman.stick.core.InteractionStick;
 import com.izyver.mr.stikman.stick.World;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,8 +17,16 @@ public class GameWorld extends World {
     }
 
     @Override
-    public InteractionStick getStickByTag(String tag) {
-        return null;
+    public InteractionStick getStickByName(String name) {
+        return stickMap.get(name);
+    }
+
+    @Override
+    public void resize(int wight, int height) {
+        Collection<InteractionStick> values = stickMap.values();
+        for (InteractionStick stick : values) {
+            stick.environmentResized(wight, height);
+        }
     }
 
     @Override

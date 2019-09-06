@@ -22,10 +22,14 @@ public class StickmanScreen implements GameScreen {
     private final World gameWorld;
     private final StickmanController stickController;
 
-    public StickmanScreen() {
-        Stickman stickman = new Stickman(USER_STICK_NAME);
+    public StickmanScreen(int width, int height) {
+
+        Stickman stickman = new Stickman(USER_STICK_NAME, 150);
         this.gameWorld = new GameWorld();
         this.stickController = new StickmanController(stickman, this.gameWorld);
+
+        this.width = width;
+        this.heigh = height;
 
         this.paint = new Paint();
         this.paint.setColor(Color.BLACK);
@@ -34,7 +38,7 @@ public class StickmanScreen implements GameScreen {
 
     @Override
     public void updateScreen(long deltaTime) {
-        gameWorld.update(deltaTime);
+        this.gameWorld.update(deltaTime);
     }
 
     @Override
@@ -47,6 +51,7 @@ public class StickmanScreen implements GameScreen {
     public void resize(int width, int height) {
         this.width = width;
         this.heigh = height;
+        this.gameWorld.resize(width, height);
     }
 
     @Override
@@ -60,7 +65,6 @@ public class StickmanScreen implements GameScreen {
         public void onDown(int x, int y) {
             if (x < width / 2){
                 stickController.toLeft(true);
-
             }else {
                 stickController.toRight(true);
             }

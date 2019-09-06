@@ -6,4 +6,6 @@ public interface InteractionStick extends StickObject {
     void onCollisionOccurred(InteractionStick collisionStick);
 
     String getTag();
+
+    void environmentResized(int width, int height);
 }

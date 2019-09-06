@@ -18,7 +18,7 @@ public class MainActivity extends Activity {
         GameView gameView = new GameView(this);
         gameLayout.addView(gameView);
 
-        gameView.setGameScreen(new StickmanScreen());
+        gameView.setGameScreen(new StickmanScreen(gameView.getWidth(), gameView.getHeight()));
         gameView.startGame();
     }
 }

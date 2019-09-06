@@ -5,8 +5,10 @@ import com.izyver.mr.stikman.stick.core.InteractionStick;
 
 public class Stickman extends DynamicStick {
 
-    public final String name;
-    private final StickmanWrapper wrapper;
+    public final static int X = 0, Y = 1;
+
+    private final String name;
+    private final StickmanEngine engine;
 
     float[]
             chest = new float[2],
@@ -20,8 +22,8 @@ public class Stickman extends DynamicStick {
             ankleLeft = new float[2],
             ankleRight = new float[2];
 
-    public Stickman(String name) {
-        this.wrapper = new StickmanWrapper(this);
+    public Stickman(String name, int height) {
+        this.engine = new StickmanEngine(this, height);
         this.name = name;
     }
 
@@ -72,6 +74,11 @@ public class Stickman extends DynamicStick {
     @Override
     public String getTag() {
         return name;
+    }
+
+    @Override
+    public void environmentResized(int width, int height) {
+        engine.resize(width, height);
     }
 
     Stickman setChest(float[] chest) {

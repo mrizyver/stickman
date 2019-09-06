@@ -17,8 +17,8 @@ public class Stickman extends DynamicStick {
     }
 
     @Override
-    public int[] getPoints() {
-        return new int[0];
+    public float[] getPoints() {
+        return new float[0];
     }
 
     @Override

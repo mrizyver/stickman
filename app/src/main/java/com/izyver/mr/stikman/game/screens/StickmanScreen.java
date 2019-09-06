@@ -4,8 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.izyver.mr.stikman.game.GameWorld;
 import com.izyver.mr.stikman.game.OnScreenInput;
-import com.izyver.mr.stikman.game.stickman.GameWorld;
 import com.izyver.mr.stikman.game.stickman.Stickman;
 import com.izyver.mr.stikman.game.stickman.StickmanController;
 import com.izyver.mr.stikman.stick.World;
@@ -37,7 +37,8 @@ public class StickmanScreen implements GameScreen {
 
     @Override
     public void render(Canvas canvas) {
-
+        canvas.drawColor(Color.WHITE);
+        canvas.drawLines(gameWorld.getPoints(), paint);
     }
 
     @Override

@@ -4,5 +4,5 @@ public interface StickObject {
     void update(long deltaTime);
 
     @StickLines
-    int[] getPoints();
+    float[] getPoints();
 }

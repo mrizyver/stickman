@@ -1,4 +1,4 @@
-package com.izyver.mr.stikman.game.stickman;
+package com.izyver.mr.stikman.game;
 
 import com.izyver.mr.stikman.stick.core.InteractionStick;
 import com.izyver.mr.stikman.stick.World;
@@ -21,7 +21,7 @@ public class GameWorld extends World {
     }
 
     @Override
-    public int[] getPoints() {
-        return new int[0];
+    public float[] getPoints() {
+        return new float[0];
     }
 }

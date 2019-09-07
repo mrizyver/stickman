@@ -8,12 +8,13 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.izyver.mr.stikman.screens.GameScreen;
+import com.izyver.mr.stikman.screens.OnScreenInput;
 
 public class GameView extends SurfaceView{
 
     private static final String TAG = "GameView";
     private final static int X = 0, Y = 1;
-    private boolean isGameRunning = true;
+    private boolean isGameRunning = false;
 
     private Thread gameThread;
     private SurfaceHolder surfaceHolder;
@@ -34,7 +35,7 @@ public class GameView extends SurfaceView{
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        gameScreen.resize(getWidth(), getHeight());
+        gameScreen.resize(getMeasuredWidth(), getMeasuredHeight());
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
@@ -47,8 +48,12 @@ public class GameView extends SurfaceView{
 
         if (isAttachedToWindow()){
             gameThread.start();
+            gameScreen.gameStarted();
         }else {
-            post(() -> gameThread.start());
+            post(() -> {
+                gameThread.start();
+                gameScreen.gameStarted();
+            });
         }
     }
 
@@ -59,6 +64,7 @@ public class GameView extends SurfaceView{
     }
 
     private void render() {
+        isGameRunning = true;
         while (isGameRunning){
 
             if(!surfaceHolder.getSurface().isValid()) continue;

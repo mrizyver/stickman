@@ -1,14 +1,17 @@
 package com.izyver.mr.stikman.game.stickman;
 
+import com.izyver.mr.stikman.stick.Movable;
 import com.izyver.mr.stikman.stick.core.DynamicStick;
 import com.izyver.mr.stikman.stick.core.InteractionStick;
 
-public class Stickman extends DynamicStick {
+public class Stickman extends DynamicStick{
 
-    public final static int X = 0, Y = 1;
+    final static int X = 0, Y = 1;
 
     private final String name;
     private final StickmanEngine engine;
+
+    final float[] position = new float[2];
 
     float[]
             chest = new float[2],
@@ -27,9 +30,19 @@ public class Stickman extends DynamicStick {
         this.name = name;
     }
 
+    public Stickman(String name, int height, float posX, float posY) {
+        this(name, height);
+        setPosition(posX, posY);
+    }
+
+    public void setPosition(float x, float y){
+        position[X] = x;
+        position[Y] = y;
+    }
+
     @Override
     public void update(long deltaTime) {
-
+        engine.update(deltaTime);
     }
 
     @Override
@@ -81,6 +94,10 @@ public class Stickman extends DynamicStick {
         engine.resize(width, height);
     }
 
+    public Movable getMovable(){
+        return engine.getMovement();
+    }
+
     Stickman setChest(float[] chest) {
         this.chest = chest;
         return this;
@@ -130,4 +147,5 @@ public class Stickman extends DynamicStick {
         this.ankleRight = ankleRight;
         return this;
     }
+
 }

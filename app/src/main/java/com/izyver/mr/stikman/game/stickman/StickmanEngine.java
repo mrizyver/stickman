@@ -1,5 +1,7 @@
 package com.izyver.mr.stikman.game.stickman;
 
+import com.izyver.mr.stikman.stick.Movable;
+
 import static com.izyver.mr.stikman.game.stickman.Stickman.X;
 import static com.izyver.mr.stikman.game.stickman.Stickman.Y;
 import static com.izyver.mr.stikman.game.stickman.StickmanEngine.LeadingLed.LEFT;
@@ -34,21 +36,24 @@ public class StickmanEngine {
     /**
      * The lastAppeal - is the time when the last frame is received
      */
-    private long lastAppeal;
-    private LeadingLed leadingLed;
+    private LeadingLed leadingLed = LEFT;
+
+    private StickmanMovement movement;
 
     StickmanEngine(Stickman stickman, int stickmanHeight) {
+        createStickman(stickman, stickmanHeight);
+
         this.stick = stickman;
         this.stickmanHeight = stickmanHeight;
         this.speed = stickmanHeight / stickmanHeightPerSecond;
-        createStickman(stickman, stickmanHeight);
         this.stepWidth = stick.ankleRight[X] - stick.ankleLeft[X];
+        this.movement = new StickmanMovement();
     }
 
 
 
-    public Stickman goToLeft() {
-        double distance = calculateMoveDistance();
+    public Stickman goToLeft(long deltaTime) {
+        double distance = calculateMoveDistance(deltaTime);
         if (distance == 0) return stick;
         stick.pelvis[X] -= distance;
         stick.chest[X] -= distance;
@@ -74,8 +79,8 @@ public class StickmanEngine {
         return stick;
     }
 
-    public Stickman goToRight() {
-        double distance = calculateMoveDistance();
+    public Stickman goToRight(long deltaTime) {
+        double distance = calculateMoveDistance(deltaTime);
         if (distance == 0) return stick;
         stick.pelvis[X] += distance;
         stick.chest[X] += distance;
@@ -120,12 +125,26 @@ public class StickmanEngine {
         return stick;
     }
 
+    public Movable getMovement() {
+        return movement;
+    }
+
+
+    void update(long deltaTime) {
+        if (movement.isMoveToLeft){
+            goToLeft(deltaTime);
+        }else if (movement.isMoveToRight){
+            goToRight(deltaTime);
+        }
+    }
+
     void resize(int width, int height){
         this.width = width;
         this.height = height;
+        createStickman(stick, stickmanHeight);
     }
 
-    private void createStickman(Stickman stickman, int stickmanHeight) {
+    private void createStickman(Stickman stickman, float stickmanHeight) {
         float fullRatioValue = RATIO_BODY + RATIO_FOOTS + RATIO_HEAD;
         float[]
                 chest = new float[2],
@@ -139,20 +158,23 @@ public class StickmanEngine {
                 ankleLeft = new float[2],
                 ankleRight = new float[2];
 
-        ankleLeft[X] = 0;
-        ankleLeft[Y] = height;
+        float startPosX = stickman.position[X];
+        float startPosY = stickman.position[Y];
 
-        ankleRight[X] = stickmanHeight * (RATIO_ANKLE_DISTANCE / fullRatioValue);
-        ankleRight[Y] = height;
+        ankleLeft[X] = startPosX;
+        ankleLeft[Y] = startPosY + stickmanHeight;
 
-        wristLeft[X] = 0;
-        wristLeft[Y] = height - (stickmanHeight / 3);
+        ankleRight[X] = startPosX + stickmanHeight * (RATIO_ANKLE_DISTANCE / fullRatioValue);
+        ankleRight[Y] = startPosY + stickmanHeight;
 
-        wristRight[X] = stickmanHeight * (RATIO_WRIST_DISTANCE / fullRatioValue);
+        wristLeft[X] = startPosX;
+        wristLeft[Y] = startPosY + (stickmanHeight / 3);
+
+        wristRight[X] = startPosX + stickmanHeight * (RATIO_WRIST_DISTANCE / fullRatioValue);
         wristRight[Y] = wristLeft[Y];
 
-        pelvis[X] = stickmanHeight * (RATIO_ANKLE_DISTANCE / fullRatioValue) / 2;
-        pelvis[Y] = height - (stickmanHeight * (RATIO_FOOTS / fullRatioValue));
+        pelvis[X] = startPosX + stickmanHeight * (RATIO_ANKLE_DISTANCE / fullRatioValue) / 2;
+        pelvis[Y] = startPosY + (stickmanHeight * (RATIO_FOOTS / fullRatioValue));
 
         chest[X] = pelvis[X];
         chest[Y] = pelvis[Y] - (stickmanHeight * (RATIO_BODY / fullRatioValue));
@@ -214,18 +236,41 @@ public class StickmanEngine {
         return averagePoint;
     }
 
-    private double calculateMoveDistance() {
-        long nowTime = System.currentTimeMillis();
-        double currentTimeFrame = nowTime - lastAppeal;
-        if (currentTimeFrame > MAX_FRAME_TIME) {
-            lastAppeal = nowTime;
-            return 0;
-        }
-        return speed * (currentTimeFrame / 1000.0);
+    private double calculateMoveDistance(long deltaTime) {
+        return speed * (deltaTime / 1000.0);
     }
+
 
     enum LeadingLed {
         RIGHT,
         LEFT
+    }
+
+    class StickmanMovement implements Movable{
+
+        boolean isMoveToRight = false;
+        boolean isMoveToLeft = false;
+
+        @Override
+        public void toRight(boolean isMove) {
+            isMoveToLeft = !isMove && isMoveToLeft;
+            isMoveToRight = isMove;
+        }
+
+        @Override
+        public void toLeft(boolean isMove) {
+            isMoveToRight = !isMove && isMoveToRight;
+            isMoveToLeft = isMove;
+        }
+
+        @Override
+        public void ToUp(boolean isMove) {
+
+        }
+
+        @Override
+        public void ToDown(boolean isMove) {
+
+        }
     }
 }

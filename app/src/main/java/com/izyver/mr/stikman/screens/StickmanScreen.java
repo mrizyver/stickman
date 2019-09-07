@@ -5,9 +5,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 import com.izyver.mr.stikman.game.GameWorld;
-import com.izyver.mr.stikman.game.OnScreenInput;
 import com.izyver.mr.stikman.game.stickman.Stickman;
-import com.izyver.mr.stikman.game.stickman.StickmanController;
+import com.izyver.mr.stikman.stick.Movable;
 import com.izyver.mr.stikman.stick.World;
 
 public class StickmanScreen implements GameScreen {
@@ -20,20 +19,21 @@ public class StickmanScreen implements GameScreen {
     private int heigh;
 
     private final World gameWorld;
-    private final StickmanController stickController;
+    private Stickman stickman;
 
-    public StickmanScreen(int width, int height) {
-
-        Stickman stickman = new Stickman(USER_STICK_NAME, 150);
+    public StickmanScreen() {
         this.gameWorld = new GameWorld();
-        this.stickController = new StickmanController(stickman, this.gameWorld);
-
-        this.width = width;
-        this.heigh = height;
 
         this.paint = new Paint();
         this.paint.setColor(Color.BLACK);
         this.paint.setStrokeWidth(2);
+    }
+
+    @Override
+    public void gameStarted() {
+        this.stickman = new Stickman(USER_STICK_NAME, 150);
+        this.stickman.setPosition( 0, heigh - 150);
+        this.gameWorld.addStick(stickman);
     }
 
     @Override
@@ -64,21 +64,30 @@ public class StickmanScreen implements GameScreen {
         @Override
         public void onDown(int x, int y) {
             if (x < width / 2){
-                stickController.toLeft(true);
+                movement().toLeft(true);
             }else {
-                stickController.toRight(true);
+                movement().toRight(true);
             }
         }
 
         @Override
         public void onUp(int x, int y) {
-            stickController.toLeft(false);
-            stickController.toRight(false);
+            movement().toLeft(false);
+            movement().toRight(false);
         }
 
         @Override
         public void onMove(int x, int y) {
 
+        }
+
+        private Movable stickmanMovable;
+
+        private Movable movement(){
+            if (stickmanMovable == null) {
+                stickmanMovable = stickman.getMovable();
+            }
+            return stickmanMovable;
         }
     }
 }

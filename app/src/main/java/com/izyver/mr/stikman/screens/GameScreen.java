@@ -2,9 +2,9 @@ package com.izyver.mr.stikman.screens;
 
 import android.graphics.Canvas;
 
-import com.izyver.mr.stikman.game.OnScreenInput;
-
 public interface GameScreen {
+
+    void gameStarted();
 
     void updateScreen(long deltaTime);
 

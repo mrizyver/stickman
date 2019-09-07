@@ -1,4 +1,4 @@
-package com.izyver.mr.stikman.game;
+package com.izyver.mr.stikman.screens;
 
 public abstract class OnScreenInput {
 
